@@ -1,0 +1,15 @@
+.centered-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: bottom; /* Center vertically */
+    height: 150vh; /* Full viewport height */
+    text-align: center; /* Center text */
+    flex-direction: row; /* Ensure horizontal layout */
+}
+
+h1 {
+    color: rgb(255, 255, 255); /* Make sure the text is visible */
+    font-size: 150rem; /* Adjust this value to make it larger or smaller */
+    font-weight: bold;
+    margin: 0; /* Remove default margin */
+}
