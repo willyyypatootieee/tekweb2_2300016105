@@ -70,7 +70,7 @@
   left: 0;
   height: 100%;
   width: 100%;
-  z-index: -1; /* Ensure the pseudo-element stays behind the li */
+  z-index: 300; /* Ensure the pseudo-element stays behind the li */
   transition: 0.2s;
   border-radius: 20px;
 }
@@ -79,6 +79,7 @@
   background: linear-gradient(to bottom, #e8edec, #d2d1d3);
   box-shadow: 0px 3px 20px 0px black;
   transform: scale(1.2);
+  z-index: 100;
 }
 
 
