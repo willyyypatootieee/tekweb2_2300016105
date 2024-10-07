@@ -16,10 +16,16 @@ export const Lobby = ({ duration = 10 * 60 * 1000 }) => {
   const viewport = useThree((state) => state.viewport);
   const cameraReference = useRef();
 
+<<<<<<< Updated upstream
   const adjustCamera = () => {
     const distFactor = 10 / viewport.getCurrentViewport(cameraReference.current, new Vector3(0, 0, 0)).width;
     controls.current.setLookAt(4.2 * distFactor, 2 * distFactor, 7.5 * distFactor, 0, 0.15, 0, true);
   };
+=======
+    const animateCamera = (distFactor) => {
+        const start = { x: 290.2, y: 299, z: 199.5 };
+        const end = { x: 4.2, y: 4, z: 19.5 };
+>>>>>>> Stashed changes
 
   useEffect(() => {
     const onResize = () => adjustCamera();
@@ -28,7 +34,17 @@ export const Lobby = ({ duration = 10 * 60 * 1000 }) => {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+<<<<<<< Updated upstream
   const players = usePlayersList(true);
+=======
+    const setCameraFinalPosition = (distFactor) => {
+        controls.current.setLookAt(3.2 * distFactor, 3.8 * distFactor, 19.5 * distFactor, 0, 0.2, 0, true);
+    };
+// jancok ga selesai" ini camera bangsat ngent
+    useEffect(() => {
+        const distFactor = 10 / viewport.getCurrentViewport(cameraReference.current, new Vector3(0, 0, 0)).width;
+        console.log("Distance Factor", distFactor);
+>>>>>>> Stashed changes
 
   useFrame((state) => {
     if (lightRef.current) {
