@@ -92,6 +92,12 @@
   height: 100vh;
 }
 
+canvas {
+  position: absolute; /* Ensure it's in the same stacking context */
+  z-index: 0; /* Lower than the menu bar */
+  top: 0;
+  left: 0;
+}
 
 
 body {

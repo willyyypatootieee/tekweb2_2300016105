@@ -50,27 +50,28 @@ export const Lobby = () => {
         controls.current.setLookAt(4.2 * distFactor, 4 * distFactor, 19.5 * distFactor, 0, 0.2, 0, true);
     };
 // jancok ga selesai" ini camera bangsat ngent
-    useEffect(() => {
-        const distFactor = 10 / viewport.getCurrentViewport(cameraReference.current, new Vector3(0, 0, 0)).width;
-        console.log("Distance Factor", distFactor);
+useEffect(() => {
+    const distFactor = 10 / viewport.getCurrentViewport(cameraReference.current, new Vector3(0, 0, 0)).width;
+    console.log("Distance Factor", distFactor);
 
-        if (!hasAnimated.current) {
-  
-            controls.current.setLookAt(50.2 * distFactor, 19 * distFactor, 49.5 * distFactor, 0, 0.2, 0, true);
-            animateCamera(distFactor);
-        } else {
-            setCameraFinalPosition(distFactor);
-        }
+    if (!hasAnimated.current) {
+        // Start camera at a higher position
+        controls.current.setLookAt(50.2 * distFactor, 19 * distFactor, 49.5 * distFactor, 0, 0.2, 0, true);
+        animateCamera(distFactor);
+    } else {
+        // Immediately set the final camera position if it's already animated
+        setCameraFinalPosition(distFactor);
+    }
 
-        const onResize = () => {
-            if (hasAnimated.current) {
-                setCameraFinalPosition(distFactor); 
-            }
-        };
-        
-        window.addEventListener("resize", onResize);
-        return () => window.removeEventListener("resize", onResize);
-    }, [viewport]);
+    const onResize = () => {
+        const updatedDistFactor = 10 / viewport.getCurrentViewport(cameraReference.current, new Vector3(0, 0, 0)).width;
+        setCameraFinalPosition(updatedDistFactor);
+    };
+
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+}, [viewport]);
+
 
     const players = usePlayersList(true);
 
