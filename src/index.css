@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -89,19 +89,10 @@
   height: 100vh;
 }
 
-#root canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 0; /* Ensure canvas is behind other elements */
-}
 
 
 body {
   margin: 0;
-<<<<<<< Updated upstream
-=======
   font-family: 'DM Sans', sans-serif; /* Use DM Sans font */
   font-weight: bold; /* Set font weight to bold */
->>>>>>> Stashed changes
 }

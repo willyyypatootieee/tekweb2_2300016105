@@ -1,127 +1,144 @@
 import { CameraControls, PerspectiveCamera, useGLTF, Html } from "@react-three/drei";
 import { useEffect, useRef } from "react";
-import { useThree, useFrame } from "@react-three/fiber"; 
+import { useThree } from "@react-three/fiber"; 
 import { usePlayersList } from "playroomkit";
 import { Vector3 } from "three";
-import { Animals } from "./Animals";
-import MovingComponent from 'react-moving-text'; // Import MovingComponent
+import { Pixel7 } from "./Showcase";
+import MovingComponent from 'react-moving-text';
+import gsap from 'gsap';
 import '/src/lobby.css';
 
-export const Lobby = ({ duration = 10 * 60 * 1000 }) => {
-  const { scene } = useGLTF("models/1lobb.glb");
-  const { gl } = useThree(); 
-  const lightRef = useRef();
-  const speed = (Math.PI / 2) / (duration / 12020.67);
-  const controls = useRef();
-  const viewport = useThree((state) => state.viewport);
-  const cameraReference = useRef();
+export const Lobby = () => {
+    const { scene } = useGLTF("models/lobby2.glb");
+    const { gl } = useThree(); 
+    const lightRef = useRef();
+    const controls = useRef();
+    const viewport = useThree((state) => state.viewport);
+    const cameraReference = useRef();
+    
+    const hasAnimated = useRef(false); // This keeps track if the animation has run
 
-<<<<<<< Updated upstream
-  const adjustCamera = () => {
-    const distFactor = 10 / viewport.getCurrentViewport(cameraReference.current, new Vector3(0, 0, 0)).width;
-    controls.current.setLookAt(4.2 * distFactor, 2 * distFactor, 7.5 * distFactor, 0, 0.15, 0, true);
-  };
-=======
     const animateCamera = (distFactor) => {
         const start = { x: 290.2, y: 299, z: 199.5 };
         const end = { x: 4.2, y: 4, z: 19.5 };
->>>>>>> Stashed changes
 
-  useEffect(() => {
-    const onResize = () => adjustCamera();
-    adjustCamera();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+        // Animate camera movement with gsap
+        gsap.to(start, {
+            x: end.x,
+            y: end.y,
+            z: end.z,
+            duration: 3,
+            ease: "power2.inOut",
+            onUpdate: () => {
+                controls.current.setLookAt(
+                    start.x * distFactor,
+                    start.y * distFactor,
+                    start.z * distFactor,
+                    0,
+                    0.2,
+                    0,
+                    true
+                );
+            },
+            onComplete: () => {
+                hasAnimated.current = true; // Mark animation as complete
+            }
+        });
+    };
 
-<<<<<<< Updated upstream
-  const players = usePlayersList(true);
-=======
     const setCameraFinalPosition = (distFactor) => {
-        controls.current.setLookAt(3.2 * distFactor, 3.8 * distFactor, 19.5 * distFactor, 0, 0.2, 0, true);
+        controls.current.setLookAt(4.2 * distFactor, 4 * distFactor, 19.5 * distFactor, 0, 0.2, 0, true);
     };
 // jancok ga selesai" ini camera bangsat ngent
     useEffect(() => {
         const distFactor = 10 / viewport.getCurrentViewport(cameraReference.current, new Vector3(0, 0, 0)).width;
         console.log("Distance Factor", distFactor);
->>>>>>> Stashed changes
 
-  useFrame((state) => {
-    if (lightRef.current) {
-      lightRef.current.position.y = 10 * Math.cos(state.clock.elapsedTime * speed);
-      lightRef.current.position.x = 10 * Math.sin(state.clock.elapsedTime * speed);
-      lightRef.current.target.position.set(0, 0, 0);
-      lightRef.current.target.updateMatrixWorld();
-    }
-  });
+        if (!hasAnimated.current) {
+  
+            controls.current.setLookAt(50.2 * distFactor, 19 * distFactor, 49.5 * distFactor, 0, 0.2, 0, true);
+            animateCamera(distFactor);
+        } else {
+            setCameraFinalPosition(distFactor);
+        }
 
-  useEffect(() => {
-    gl.shadowMap.enabled = true;
-    gl.shadowMap.type = gl.PCFSoftShadowMap;
-  }, [gl]);
+        const onResize = () => {
+            if (hasAnimated.current) {
+                setCameraFinalPosition(distFactor); 
+            }
+        };
+        
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
+    }, [viewport]);
 
-  useEffect(() => {
-    scene.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-  }, [scene]);
+    const players = usePlayersList(true);
 
-  // Title Screen
-  const showTitleScreen = true;
-  const titleText = "Social+".split(""); // Split the text into individual letters
+    useEffect(() => {
+        gl.shadowMap.enabled = true;
+        gl.shadowMap.type = gl.PCFSoftShadowMap;
+    }, [gl]);
 
-  return (
-    <>
-      <PerspectiveCamera ref={cameraReference} position={[0, 1, 7]} />
-      <group>
-        <CameraControls ref={controls} />
-        <ambientLight intensity={0.5} />
-        <directionalLight
-          ref={lightRef}
-          intensity={1}
-          position={[10, 10, 10]}
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-          shadow-camera-near={0.5}
-          shadow-camera-far={50}
-        />
-        <primitive object={scene} />
-        {players.map((player, index) => (
-          <group key={player.id} position={[index * 2, 0, 0]}>
-            <Animals />
-          </group>
-        ))}
+    useEffect(() => {
+        scene.traverse((child) => {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+            }
+        });
+    }, [scene]);
 
-        {/* Title Screen */}
-        {showTitleScreen && (
-  <Html fullscreen>
-    <div className="centered-container">
-      {/* Directly map titleText here */}
-      {titleText.map((letter, index) => (
-        <MovingComponent
-          key={index}
-          type="blur"
-          duration="5200ms"
-          delay={`${index * 100}ms`}
-          direction="normal"
-          timing="ease"
-          iteration="infinite" // Use 'infinite' for looping
-          fillMode="none"
-          style={{ display: 'inline-block' }} // Ensure letters are inline
-        >
-          {letter}
-        </MovingComponent>
-      ))}
-    </div>
-  </Html>
-)}
-      </group>
-    </>
-  );
+    const showTitleScreen = true;
+    const titleText = "Google Store".split("");
+
+    const modelScale = [1, 1, 1]; // Set your desired global scale here
+
+    return (
+        <>
+            <PerspectiveCamera ref={cameraReference} position={[0, 1, 4]} />
+            <group>
+                <CameraControls ref={controls} />
+                <ambientLight intensity={1} />
+                <directionalLight
+                    ref={lightRef}
+                    intensity={2}
+                    position={[50, 50, 50]}
+                    castShadow
+                    shadow-mapSize-width={4096}
+                    shadow-mapSize-height={4096}
+                    shadow-camera-near={0.5}
+                    shadow-camera-far={40}
+                />
+                <primitive object={scene} />
+                {players.map((player, index) => (
+                    <group key={player.id} position={[index * 5, 0, 0]}>
+                        <Pixel7 scale={modelScale} />
+                    </group>
+                ))}
+                {showTitleScreen && (
+                    <Html fullscreen>
+                        <div className="centered-container">
+                            {titleText.map((letter, index) => (
+                                <MovingComponent
+                                    key={index}
+                                    type="blur"
+                                    duration="5200ms"
+                                    delay={`${index * 100}ms`}
+                                    direction="normal"
+                                    timing="ease"
+                                    iteration="infinite"
+                                    fillMode="none"
+                                    style={{ display: 'inline-block' }}
+                                >
+                                    {letter}
+                                </MovingComponent>
+                            ))}
+                        </div>
+                    </Html>
+                )}
+            </group>
+        </>
+    );
 };
 
-useGLTF.preload("models/1lobb.glb");
+useGLTF.preload("models/lobby2.glb");
